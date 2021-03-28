@@ -4,6 +4,7 @@ from pandas import *
 from PIL import ImageTk, Image, ImageDraw, ImageFilter
 import numpy
 
+#selection la map correspendante au chemin
 def get_map2():
     global data, tab
     i_deb = debut_data()
@@ -20,6 +21,7 @@ def get_map2():
                 tab[tmp]["fin"] = i
                 tmp = None
 
+#retourne l'indice du debut
 def debut_data():
     global data
     i = 0
@@ -46,7 +48,7 @@ def add_file():
         tableau.append(i)
     tab_time = {}
     spinbox.destroy()
-    spinbox = Spinbox(top, values=tableau)
+    spinbox = tkinter.Spinbox(top, values=tableau)
     if boutD is not None:
         boutD.destroy()
         print("boutD")
@@ -78,7 +80,7 @@ def bouton_ok():
     boutSup = tkinter.Button(top, text = 'Supprimer',width = 15, command = bouton)
     boutSuiv = tkinter.Button(top, text='Suivant',width = 15, command = suivant)
     boutPrec = tkinter.Button(top, text='Précedent',width = 15, command = precedent)
-    vitesse = Scale(top, orient='horizontal', from_=1, to=30, resolution=1, length=150, label='vitesse', variable = value)
+    vitesse = tkinter.Scale(top, orient='horizontal', from_=1, to=30, resolution=1, length=150, label='vitesse', variable = value)
     boutAff = tkinter.Button(top, text="Tout afficher", width = 15, command = affiche_lines3, activebackground="red")
 
     if animation is not None:
@@ -88,7 +90,7 @@ def bouton_ok():
     boutSup.place(x = 30 , y = 150)
     boutSuiv.place(x = 30 , y = 175)
     boutPrec.place(x = 30 , y = 200)
-    animation = Scale(fenetre, orient='horizontal', from_= tab[spinbox.get()]["debut"], to=tab[spinbox.get()]["fin"], resolution=1, length=900, label='timeline', variable = i3, command = trace_ligne6)
+    animation = tkinter.Scale(fenetre, orient='horizontal', from_= tab[spinbox.get()]["debut"], to=tab[spinbox.get()]["fin"], resolution=1, length=900, label='timeline', variable = i3, command = trace_ligne6)
     remplire_tableau_indice()
     i_actuelle = tab[spinbox.get()]["debut"]
     monCanvas.delete("all")
@@ -147,7 +149,7 @@ def modif_image2(var_img):
     im_rgba.save(name_img)
     img1 = ImageTk.PhotoImage(Image.open(name_img).resize((int(hauteur/division), int(largeur/division))))
     img = img1
-    monCanvas.create_image(0,0, image = img1, anchor=NW)
+    monCanvas.create_image(0,0, image = img1, anchor=tkinter.NW)
 
 def couleur_lines():
     global i2, i3
@@ -233,7 +235,7 @@ def remplire_tableau_carte():
 def bouton():
     global monCanvas
     monCanvas.delete('all')
-    monCanvas.create_image(0,0, image = img, anchor=NW)
+    monCanvas.create_image(0,0, image = img, anchor=tkinter.NW)
 
 def suivant():
     global i3, ball2, animation
@@ -249,10 +251,10 @@ def precedent():
 
 def modification():
     global ball2
-    if (monCanvas.itemcget(ball2, 'state')== HIDDEN) :
-        monCanvas.itemconfig(ball2, state=NORMAL)
+    if (monCanvas.itemcget(ball2, 'state')== tkinter.HIDDEN) :
+        monCanvas.itemconfig(ball2, state=tkinter.NORMAL)
     else:
-        monCanvas.itemconfig(ball2, state=HIDDEN)
+        monCanvas.itemconfig(ball2, state=tkinter.HIDDEN)
 
 def play_stop():
     global text_bouton_play, play, animation, i3, i2
@@ -291,19 +293,19 @@ monCanvas.place(x=0,y=0)
 
 
 #fenetre top level "boite a outils"
-top = Toplevel(fenetre)
+top = tkinter.Toplevel(fenetre)
 top.title('Boîte à outils')
 top.transient(fenetre)
 top.geometry("180x350")
 
 #-variable changeante
 ball = monCanvas.create_line(0,0,0,0)
-text_bouton_play = StringVar(fenetre)
-timee = StringVar(fenetre)
-name = StringVar(fenetre)
-i_a = IntVar(fenetre)
-taille = IntVar(fenetre)
-inf = IntVar(fenetre)
+text_bouton_play = tkinter.StringVar(fenetre)
+timee = tkinter.StringVar(fenetre)
+name = tkinter.StringVar(fenetre)
+i_a = tkinter.IntVar(fenetre)
+taille = tkinter.IntVar(fenetre)
+inf = tkinter.IntVar(fenetre)
 value = tkinter.DoubleVar(top)
 
 #initialisation des variables
@@ -341,10 +343,10 @@ vitesse = None
 """
 #Les boutons de la boîte à outils
 
-spinbox = Spinbox(top, values=tableau)
-texteLabel3 = Label(top, textvariable = timee)
-texteLabel4 = Label(top, textvariable = name)
-ms = Label(top, text = "ms")
+spinbox = tkinter.Spinbox(top, values=tableau)
+texteLabel3 = tkinter.Label(top, textvariable = timee)
+texteLabel4 = tkinter.Label(top, textvariable = name)
+ms = tkinter.Label(top, text = "ms")
 
 boutD = tkinter.Button(top, textvariable =text_bouton_play, width =15, command=play_stop, activebackground="red")
 boutOk = tkinter.Button(top, text='OK', width =15, command=bouton_ok)
@@ -354,7 +356,7 @@ boutF = tkinter.Button(top, text = 'Utilisateur',width = 15, command = add_file,
 boutSuiv = tkinter.Button(top, text='Suivant',width = 15, command = suivant)
 boutPrec = tkinter.Button(top, text='Précedent',width = 15, command = precedent)
 boutAff = tkinter.Button(top, text="Tout afficher", width = 15, command = affiche_lines3, activebackground="red")
-vitesse = Scale(top, orient='horizontal', from_=1, to=30, resolution=1, length=150, label='vitesse', variable = value)
+vitesse = tkinter.Scale(top, orient='horizontal', from_=1, to=30, resolution=1, length=150, label='vitesse', variable = value)
 
 texteLabel3.place( x = 85, y = 8)
 ms.place(x = 120, y = 8 )
