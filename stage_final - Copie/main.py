@@ -95,7 +95,7 @@ def bouton_ok():
     i_actuelle = tab[spinbox.get()]["debut"]
     monCanvas.delete("all")
 
-    boutAff.place(x = 30 , y = 225)
+    #boutAff.place(x = 30 , y = 225)
     vitesse.place(x = 10 , y = 250)
 
     indice = int(animation.get())
