@@ -81,8 +81,7 @@ def bouton_ok():
     boutSuiv = tkinter.Button(top, text='Suivant',width = 15, command = suivant)
     boutPrec = tkinter.Button(top, text='Précedent',width = 15, command = precedent)
     vitesse = tkinter.Scale(top, orient='horizontal', from_=1, to=30, resolution=1, length=150, label='vitesse', variable = value)
-    boutAff = tkinter.Button(top, text="Tout afficher", width = 15, command = affiche_lines3, activebackground="red")
-
+    boutAff = tkinter.Button(top, text="HeatMap", width = 15, command = map_heatmap , activebackground="red")
     if animation is not None:
         animation.destroy()
 
@@ -95,7 +94,7 @@ def bouton_ok():
     i_actuelle = tab[spinbox.get()]["debut"]
     monCanvas.delete("all")
 
-    #boutAff.place(x = 30 , y = 225)
+    boutAff.place(x = 30 , y = 225)
     vitesse.place(x = 10 , y = 250)
 
     indice = int(animation.get())
@@ -132,6 +131,32 @@ def animation_lines4():
         fenetre.after(int((data["GazeEventDuration"][l])/(value.get())),animation_lines4)
     else:
         start = False
+def zoneHeatMap(x, y, h):
+    s = 0
+    for i in range(x - h, x + h):
+        for j in range(y - h, y + h):
+            s += tableau_heatmap[i][j]
+    return s
+
+def map_heatmap():
+    for i in range(5, hauteur_fenetre - 5):
+        for j in range(5, largeur_fenetre - 5):
+            s = zoneHeatMap(i, j, 5)
+            if s > 0:
+                if s > 15:
+                    print(s)
+                    monCanvas.create_oval(i, j, i + 1, j + 1, fill = "red", outline = "red")
+                else:
+                    if s > 10:
+                        monCanvas.create_oval(i, j, i + 1, j + 1, fill = "orange", outline = "orange")
+                    else:
+                        if s > 5:
+                            monCanvas.create_oval(i, j, i + 1, j + 1, fill = "yellow", outline = "yellow")
+                        else:
+                            monCanvas.create_oval(i, j, i + 1, j + 1, fill = "green", outline = "green")
+
+
+
 
 def stop():
     global start, animation, i3
@@ -178,12 +203,20 @@ def trace_ligne6(val):
                         k_1 = tableau_indice[k_i]
                         k_2 = tableau_indice[k_i + 1]
                         list_ligne.append(monCanvas.create_line(data["GazePointX (MCSpx)"][k_1]/division,data["GazePointY (MCSpx)"][k_1]/division,data["GazePointX (MCSpx)"][k_2]/division,data["GazePointY (MCSpx)"][k_2]/division))
+                        
                     #timee.set(get_time(l))
             list_ligne.append(monCanvas.create_line(data["GazePointX (MCSpx)"][k]/division,data["GazePointY (MCSpx)"][k]/division,data["GazePointX (MCSpx)"][l]/division,data["GazePointY (MCSpx)"][l]/division))
             monCanvas.delete(ball)
             ball = monCanvas.create_oval((data["GazePointX (MCSpx)"][l]/division)-5,(data["GazePointY (MCSpx)"][l]/division)-5,(data["GazePointX (MCSpx)"][l]/division)+5,(data["GazePointY (MCSpx)"][l]/division)+5, fill = "red")
+            if(len(list_ligne)>10):
+                tmp = list_ligne[0]
+                del list_ligne[0]
+                monCanvas.delete(tmp)
+            
             #timee.set(get_time(l))
             #timee.set(timee.set(data["RecordingTimestamp"][l]))
+            print(int(data["GazePointX (MCSpx)"][k]/division), " - ", data["GazePointY (MCSpx)"][k]/division, " - ", data["GazePointX (MCSpx)"][l]/division, " - ", data["GazePointY (MCSpx)"][l]/division)
+            tableau_heatmap[int(data["GazePointX (MCSpx)"][l]/division)][int(data["GazePointY (MCSpx)"][l]/division)] += 1
             timee.set(data["RecordingTimestamp"][l])
         else:
             for j in range(int(val),i_actuelle):
@@ -197,7 +230,9 @@ def trace_ligne6(val):
             #timee.set(get_time(l))
             #timee.set(tab_time[l])
         i_actuelle = int(val)
+
 tab_time = {}
+
 def get_time_tab():
     global data, tab, spinbox
     deb = tab[spinbox.get()]["debut"]
@@ -329,6 +364,10 @@ value.set(1)
 #variable tableau, liste, dictionnaire
 tableau = []
 tableau_indice = []
+tableau_heatmap = [0] * hauteur_fenetre
+for i in range(hauteur_fenetre):
+    tableau_heatmap[i] = [0] * largeur_fenetre
+
 tableau_carte = {}
 
 #initialisation bouton
