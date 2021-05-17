@@ -62,7 +62,7 @@ class Application(tkinter.Frame):
             self.demarer_ligne()
             self.play =True
             # text_bouton_play.set("Arrêter")
-    
+
     def stop(self):
         self.start = False
         #nb_id = monCanvas.find_all()[len(monCanvas.find_all())-1]
@@ -236,9 +236,11 @@ root = tkinter.Tk()
 # ritt2 = tkinter.Toplevel(root)
 
 
+
 listApp = []
 listfen = []
 i=0
+
 def new_f():
     global i
     listApp.append(tkinter.Toplevel(root))
@@ -248,6 +250,14 @@ def new_f():
         print(i)
         # listApp[j].mainloop()
     i +=1
+    label = Label(root, text="Hello World")
+    label.pack()
+
+def play_all(event):
+    for j in range(i):
+        listfen[j].play_stop()
+
+root.bind('<Any-KeyPress>',play_all)
 
 bouton = tkinter.Button(root, text = "new fenetre", width =15, command = new_f)
 bouton.pack()
