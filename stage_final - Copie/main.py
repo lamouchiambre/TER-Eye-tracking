@@ -72,7 +72,7 @@ def add_file():
     boutOk.place(x = 30 , y = 85)
 
 def bouton_ok():
-    global animation, spinbox, data, tab, spinbox, i3, p, indice, monCanvas, ball2, largeur_fenetre, tableau_carte, i_actuelle,boutD, boutSup, boutSuiv, boutF,boutPrec, vitesse, boutAff
+    global animation, spinbox, data, tab, spinbox, i3, p, indice, monCanvas, ball2, largeur_fenetre, tableau_carte, i_actuelle,boutD, boutSup, boutSuiv, boutF,boutPrec, vitesse, boutAff, anim_deb, time_deb
 
     boutD = tkinter.Button(top, textvariable =text_bouton_play, width =15, command=play_stop, activebackground="red")
     boutOk = tkinter.Button(top, text='OK', width =3,height = 1, command=bouton_ok)
@@ -89,11 +89,16 @@ def bouton_ok():
     boutSup.place(x = 30 , y = 150)
     boutSuiv.place(x = 30 , y = 175)
     boutPrec.place(x = 30 , y = 200)
-    animation = tkinter.Scale(fenetre, orient='horizontal', from_= tab[spinbox.get()]["debut"], to=tab[spinbox.get()]["fin"], resolution=1, length=900, label='timeline', variable = i3, command = trace_ligne6)
+    anim_deb = tab[spinbox.get()]["debut"]
+    anim_fin = tab[spinbox.get()]["fin"] - tab[spinbox.get()]["debut"]
+    animation = tkinter.Scale(fenetre, orient='horizontal', from_= 0, to=anim_fin, resolution=1, length=900, label='timeline', variable = i3, command = trace_ligne6)
     remplire_tableau_indice()
     i_actuelle = tab[spinbox.get()]["debut"]
+    #str( int(anim_deb) + int(val))
+    #data["RecordingTimestamp"]
+    print("yolo = ",tableau_indice[tableau_indice.index(anim_deb)]," ",data["RecordingTimestamp"][tableau_indice[tableau_indice.index(anim_deb)]])
     monCanvas.delete("all")
-
+    time_deb = int(data["RecordingTimestamp"][tableau_indice[tableau_indice.index(anim_deb)]])
     boutAff.place(x = 30 , y = 225)
     vitesse.place(x = 10 , y = 250)
 
@@ -102,7 +107,7 @@ def bouton_ok():
     animation.place(x = 0, y = largeur_fenetre)
     modif_image2(spinbox.get())
     get_time_tab()
-    timee.set(" ")
+    timee.set("0")
     if ball2 is not None:
         ball2.destroy()
 
@@ -131,6 +136,7 @@ def animation_lines4():
         fenetre.after(int((data["GazeEventDuration"][l])/(value.get())),animation_lines4)
     else:
         start = False
+
 def zoneHeatMap(x, y, h):
     s = 0
     for i in range(x - h, x + h):
@@ -145,17 +151,15 @@ def map_heatmap():
             if s > 0:
                 if s > 15:
                     print(s)
-                    monCanvas.create_oval(i, j, i + 1, j + 1, fill = "red", outline = "red")
+                    monCanvas.create_oval(i, j, i, j, fill = "red", outline = "red")
                 else:
                     if s > 10:
-                        monCanvas.create_oval(i, j, i + 1, j + 1, fill = "orange", outline = "orange")
+                        monCanvas.create_oval(i, j, i, j, fill = "orange", outline = "orange")
                     else:
-                        if s > 5:
-                            monCanvas.create_oval(i, j, i + 1, j + 1, fill = "yellow", outline = "yellow")
+                        if s > 1:
+                            monCanvas.create_oval(i, j, i, j, fill = "yellow", outline = "yellow")
                         else:
-                            monCanvas.create_oval(i, j, i + 1, j + 1, fill = "green", outline = "green")
-
-
+                            monCanvas.create_oval(i, j, i, j, fill = "green", outline = "green")
 
 
 def stop():
@@ -190,12 +194,17 @@ def appartient(elt, lst):
     return False
 
 def trace_ligne6(val):
-    global data, monCanvas, tableau_indice, division, list_ligne, i_actuelle, ball,timee
+    global data, monCanvas, tableau_indice, division, list_ligne, i_actuelle, ball,timee, anim_deb, time_deb
+    val = str( int(anim_deb) + int(val))
+    print("anim_deb = ", anim_deb)
+    print("time_deb = ", time_deb)
     if (appartient(int(val),tableau_indice)):
         if(int(val) >= i_actuelle):
             i = tableau_indice.index(int(val))
             k = tableau_indice[i]
             l = tableau_indice[i + 1]
+            print("k = ", k, " ",data["RecordingTimestamp"][k])
+            print("l = ", l, " ", data["RecordingTimestamp"][l])
             if (True):
                 for j in range(i_actuelle+1,int(val)):
                     if (appartient(j, tableau_indice)):
@@ -204,9 +213,9 @@ def trace_ligne6(val):
                         k_2 = tableau_indice[k_i + 1]
                         list_ligne.append(monCanvas.create_line(data["GazePointX (MCSpx)"][k_1]/division,data["GazePointY (MCSpx)"][k_1]/division,data["GazePointX (MCSpx)"][k_2]/division,data["GazePointY (MCSpx)"][k_2]/division))
                         
-                    #timee.set(get_time(l))
             list_ligne.append(monCanvas.create_line(data["GazePointX (MCSpx)"][k]/division,data["GazePointY (MCSpx)"][k]/division,data["GazePointX (MCSpx)"][l]/division,data["GazePointY (MCSpx)"][l]/division))
             monCanvas.delete(ball)
+            
             ball = monCanvas.create_oval((data["GazePointX (MCSpx)"][l]/division)-5,(data["GazePointY (MCSpx)"][l]/division)-5,(data["GazePointX (MCSpx)"][l]/division)+5,(data["GazePointY (MCSpx)"][l]/division)+5, fill = "red")
             if(len(list_ligne)>10):
                 tmp = list_ligne[0]
@@ -215,9 +224,10 @@ def trace_ligne6(val):
             
             #timee.set(get_time(l))
             #timee.set(timee.set(data["RecordingTimestamp"][l]))
-            print(int(data["GazePointX (MCSpx)"][k]/division), " - ", data["GazePointY (MCSpx)"][k]/division, " - ", data["GazePointX (MCSpx)"][l]/division, " - ", data["GazePointY (MCSpx)"][l]/division)
+            #print(int(data["GazePointX (MCSpx)"][k]/division), " - ", data["GazePointY (MCSpx)"][k]/division, " - ", data["GazePointX (MCSpx)"][l]/division, " - ", data["GazePointY (MCSpx)"][l]/division)
             tableau_heatmap[int(data["GazePointX (MCSpx)"][l]/division)][int(data["GazePointY (MCSpx)"][l]/division)] += 1
-            timee.set(data["RecordingTimestamp"][l])
+            timee.set(str(int(data["RecordingTimestamp"][l])-int(time_deb)))
+            #timee.set(data["RecordingTimestamp"][l])
         else:
             for j in range(int(val),i_actuelle):
                 l = int(val)
@@ -226,9 +236,8 @@ def trace_ligne6(val):
                     monCanvas.delete(a)
                     monCanvas.delete(ball)
                     ball = monCanvas.create_oval((data["GazePointX (MCSpx)"][l]/division)-5,(data["GazePointY (MCSpx)"][l]/division)-5,(data["GazePointX (MCSpx)"][l]/division)+5,(data["GazePointY (MCSpx)"][l]/division)+5, fill = "red")
-            timee.set(data["RecordingTimestamp"][l])
+            timee.set(str(int(data["RecordingTimestamp"][l])-int(time_deb)))
             #timee.set(get_time(l))
-            #timee.set(tab_time[l])
         i_actuelle = int(val)
 
 tab_time = {}
@@ -388,8 +397,8 @@ texteLabel4 = tkinter.Label(top, textvariable = name)
 ms = tkinter.Label(top, text = "ms")
 
 boutD = tkinter.Button(top, textvariable =text_bouton_play, width =15, command=play_stop, activebackground="red")
-boutOk = tkinter.Button(top, text='OK', width =15, command=bouton_ok)
-boutS = tkinter.Button(top, text='Stop', width =15, command=stop)
+boutOk = tkinter.Button(top, text= 'OK', width =15, command=bouton_ok)
+boutS = tkinter.Button(top, text= 'Stop', width =15, command=stop)
 boutSup = tkinter.Button(top, text = 'Supprimer',width = 15, command = bouton)
 boutF = tkinter.Button(top, text = 'Utilisateur',width = 15, command = add_file, bg="yellow")
 boutSuiv = tkinter.Button(top, text='Suivant',width = 15, command = suivant)
