@@ -1,0 +1,20 @@
+variables fichier python
+data : tableau des données (fichier tsv)
+tab : tableau de debut et de fin de chaque media
+filepath : fichier importer de l'utilisateur
+i2 : 
+i3 : 
+time : 
+taille : 
+tableau : 
+tab_time : 
+
+spinbox = barre choix d'utilisateur
+boutD = bouton play/stop
+boutOK = bouton ok
+boutS = bouton 
+autre bout
+pour deuxieme utilisateur faire seulement
+
+fonctions
+debut_data() : 

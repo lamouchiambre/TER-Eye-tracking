@@ -1,0 +1,22 @@
+ce que je doit fair;
+-Tourver un moyen de visualiser plusieur utilisateur en même temp
+c'est a dire : 
+# pouvoir visualiser un tracée en sychroniser
+# démarrage de la visualisation indepandante
+	- play
+	- suivant 
+	- précendent 
+:: solution
+- créer un tableau de fenetre top level (interret avoir un nbre non defie d'utilisateur)
+- une grande fentre diviser en plusieur (2)
+- seulement 2 fênetres
+
+pour la transparence
+ - effacer et remettre les traits (probleme complexitée)
+ - (possiblie de changer les attribut d'un truc ?)
+
+pour le temps
+- changer le temps a partire de zéro
+- pour la spinbox = crée un interval qui prendrade la valeur graduée la plus petit (par etalonnage)
+
+(dans un premier temps régler le probleme de la double utilisateur)
